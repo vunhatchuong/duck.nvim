@@ -1,6 +1,6 @@
 local M = {}
 M.ducks_list = {}
-local conf = {character="🦆", speed=10, width=2, height=1, color="none", blend=100}
+M.conf = {character="🦆", speed=10, width=2, height=1, color="none", blend=100}
 
 -- TODO: a mode to wreck the current buffer?
 local waddle = function(duck, speed)
@@ -8,7 +8,7 @@ local waddle = function(duck, speed)
     local new_duck = { name = duck, timer = timer }
     table.insert(M.ducks_list, new_duck)
 
-    local waddle_period = 1000 / (speed or conf.speed)
+    local waddle_period = 1000 / (speed or M.conf.speed)
     vim.loop.timer_start(timer, 1000, waddle_period, vim.schedule_wrap(function()
         if vim.api.nvim_win_is_valid(duck) then
             local config = vim.api.nvim_win_get_config(duck)
@@ -50,13 +50,13 @@ end
 
 M.hatch = function(character, speed, color)
     local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(buf , 0, 1, true , {character or conf.character})
+    vim.api.nvim_buf_set_lines(buf , 0, 1, true , {character or M.conf.character})
 
     local duck = vim.api.nvim_open_win(buf, false, {
-        relative='cursor', style='minimal', row=1, col=1, width=conf.width, height=conf.height
+        relative="cursor", style="minimal", row=1, col=1, width=M.conf.width, height=M.conf.height
     })
-    vim.cmd("hi Duck"..duck.." guifg=" .. (color or conf.color) .. " guibg=none blend=" .. conf.blend)
-    vim.api.nvim_win_set_option(duck, 'winhighlight', 'Normal:Duck'..duck)
+    vim.cmd("hi Duck"..duck.." guifg=" .. (color or M.conf.color) .. " guibg=none blend=" .. M.conf.blend)
+    vim.api.nvim_win_set_option(duck, "winhighlight", "Normal:Duck"..duck)
 
     waddle(duck, speed)
 end
@@ -69,8 +69,8 @@ M.cook = function()
         return
     end
 
-    local duck = last_duck['name']
-    local timer = last_duck['timer']
+    local duck = last_duck["name"]
+    local timer = last_duck["timer"]
     table.remove(M.ducks_list, #M.ducks_list)
     timer:stop()
 
@@ -86,10 +86,6 @@ M.cook_all = function()
     while (#M.ducks_list > 0) do
         M.cook()
     end
-end
-
-M.setup = function(opts)
-    conf = vim.tbl_deep_extend('force', conf, opts or {})
 end
 
 return M

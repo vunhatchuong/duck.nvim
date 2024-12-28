@@ -1,4 +1,4 @@
-local duck = require("duck")
+local duck = require("duck.duck")
 
 local M = {}
 

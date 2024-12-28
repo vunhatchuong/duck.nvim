@@ -1,4 +1,4 @@
-local Command = require("command")
+local Command = require("duck.command")
 
 vim.api.nvim_create_user_command("Duck", function(opts)
     Command.load_command(unpack(opts.fargs))
